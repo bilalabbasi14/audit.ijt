@@ -1,5 +1,5 @@
 {
-  "name": "audit.ijt",
+  "name": "Audit.ijt",
   "description": "Organizational financial audit management with donor tracking, expense tracking, and PDF report generation.",
   "requestFramePermissions": [],
   "majorCapabilities": ["Financial Auditing", "PDF Reporting", "Donor Management"]
