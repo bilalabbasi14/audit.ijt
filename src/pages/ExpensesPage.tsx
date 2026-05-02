@@ -216,11 +216,9 @@ export default function ExpensesPage() {
         </div>
         <div className="flex gap-2">
           <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <Tag className="h-4 w-4" />
-                Add Category
-              </Button>
+            <DialogTrigger render={<Button variant="outline" className="gap-2" />}>
+              <Tag className="h-4 w-4" />
+              Add Category
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -244,11 +242,9 @@ export default function ExpensesPage() {
             setIsDialogOpen(open);
             if (!open) { setEditingExpense(null); resetForm(); }
           }}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Expense
-              </Button>
+            <DialogTrigger render={<Button className="gap-2" />}>
+              <Plus className="h-4 w-4" />
+              Add Expense
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
@@ -259,18 +255,20 @@ export default function ExpensesPage() {
                   <Label htmlFor="category">Category</Label>
                   <div className="flex flex-col">
                     <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={comboboxOpen}
-                          className="w-full justify-between font-normal"
-                        >
-                          {formData.category_id
-                            ? categories.find((c) => c.id === formData.category_id)?.name
-                            : "Select category..."}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
+                      <PopoverTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={comboboxOpen}
+                            className="w-full justify-between font-normal"
+                          />
+                        }
+                      >
+                        {formData.category_id
+                          ? categories.find((c) => c.id === formData.category_id)?.name
+                          : "Select category..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </PopoverTrigger>
                       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                         <Command>

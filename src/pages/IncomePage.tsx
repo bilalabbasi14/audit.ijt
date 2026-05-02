@@ -212,11 +212,9 @@ export default function IncomePage() {
           setIsDialogOpen(open);
           if (!open) { setEditingIncome(null); resetForm(); }
         }}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Income
-            </Button>
+          <DialogTrigger render={<Button className="gap-2" />}>
+            <Plus className="h-4 w-4" />
+            Add Income
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -227,18 +225,20 @@ export default function IncomePage() {
                 <Label htmlFor="muawin">Muawin (Donor)</Label>
                 <div className="flex flex-col">
                   <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={comboboxOpen}
-                        className="w-full justify-between font-normal"
-                      >
-                        {formData.muawin_id
-                          ? muawineen.find((m) => m.id === formData.muawin_id)?.name
-                          : "Select donor..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
+                    <PopoverTrigger
+                      render={
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={comboboxOpen}
+                          className="w-full justify-between font-normal"
+                        />
+                      }
+                    >
+                      {formData.muawin_id
+                        ? muawineen.find((m) => m.id === formData.muawin_id)?.name
+                        : "Select donor..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                       <Command>

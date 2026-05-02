@@ -169,11 +169,9 @@ export default function MuawineenPage() {
           setIsDialogOpen(open);
           if (!open) { setEditingMuawin(null); resetForm(); }
         }}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Muawin
-            </Button>
+          <DialogTrigger render={<Button className="gap-2" />}>
+            <Plus className="h-4 w-4" />
+            Add Muawin
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>

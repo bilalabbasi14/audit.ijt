@@ -12,6 +12,14 @@ import { FileDown, Printer, Loader2 } from 'lucide-react';
 import { generatePDF } from '@/utils/pdf';
 import { toast } from 'sonner';
 
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+
 export default function ReportsPage() {
   const { organization } = useOrganization();
   const [loading, setLoading] = useState(false);
@@ -290,11 +298,3 @@ function ReportCard({ title, description, children, icon }: any) {
     </Card>
   );
 }
-
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";

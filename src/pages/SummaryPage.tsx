@@ -12,6 +12,8 @@ import { recalculateMonthlySummary } from '@/utils/summary';
 import { RefreshCw, TrendingUp, TrendingDown, Wallet, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { cn } from '@/lib/utils';
+
 export default function SummaryPage() {
   const { organization } = useOrganization();
   const [summary, setSummary] = useState<MonthlySummary | null>(null);
@@ -194,4 +196,3 @@ function MiniCard({ title, value, highlight }: { title: string, value: number, h
   );
 }
 
-import { cn } from '@/lib/utils';
