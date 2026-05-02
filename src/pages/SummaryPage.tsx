@@ -12,7 +12,7 @@ import { recalculateMonthlySummary } from '@/utils/summary';
 import { RefreshCw, TrendingUp, TrendingDown, Wallet, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/cn';
 
 export default function SummaryPage() {
   const { organization } = useOrganization();

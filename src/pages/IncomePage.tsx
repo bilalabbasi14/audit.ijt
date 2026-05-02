@@ -49,7 +49,7 @@ import { formatCurrency } from '@/utils/session';
 import MonthSelector from '@/components/shared/MonthSelector';
 import { recalculateMonthlySummary } from '@/utils/summary';
 
-import { cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/cn';
 
 
 export default function IncomePage() {

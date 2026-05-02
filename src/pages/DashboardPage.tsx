@@ -17,7 +17,7 @@ import {
   Users
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/cn';
 
 export default function DashboardPage() {
   const { organization } = useOrganization();
