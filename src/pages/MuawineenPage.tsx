@@ -359,8 +359,7 @@ function AmoomiStatusGrid({ muawineen }: { muawineen: Muawin[] }) {
         const { data, error } = await supabase
           .from('income_entries')
           .select('*')
-          .eq('org_id', organization.id)
-          .eq('type', 'amoomi');
+          .eq('org_id', organization.id);
         if (error) throw error;
         setIncomes(data || []);
       } catch (err) {
@@ -377,6 +376,10 @@ function AmoomiStatusGrid({ muawineen }: { muawineen: Muawin[] }) {
     const totalPaid = monthIncomes.reduce((sum, i) => sum + i.amount, 0);
 
     if (totalPaid <= 0) return { icon: <XCircle className="h-4 w-4 text-destructive" />, label: 'Unpaid' };
+    
+    // If committed amount is 0, any amount means Paid
+    if (committed <= 0 && totalPaid > 0) return { icon: <CheckCircle2 className="h-4 w-4 text-green-500" />, label: 'Paid' };
+    
     if (totalPaid >= committed) return { icon: <CheckCircle2 className="h-4 w-4 text-green-500" />, label: 'Paid' };
     return { icon: <AlertCircle className="h-4 w-4 text-amber-500" />, label: 'Partial' };
   };
