@@ -46,7 +46,7 @@ import { Check, ChevronsUpDown, Plus, Edit2, Trash2, TrendingDown, Tag } from 'l
 import { toast } from 'sonner';
 import { format, parseISO } from 'date-fns';
 import { formatCurrency } from '@/utils/session';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 import MonthSelector from '@/components/shared/MonthSelector';
 import { recalculateMonthlySummary } from '@/utils/summary';
 
