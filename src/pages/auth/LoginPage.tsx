@@ -25,10 +25,17 @@ export default function LoginPage() {
     const email = usernameToEmail(username);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      // Add a timeout for the login request
+      const loginPromise = supabase.auth.signInWithPassword({
         email,
         password,
       });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Login request timed out. Please check your internet and try again.')), 15000)
+      );
+
+      const { error } = (await Promise.race([loginPromise, timeoutPromise])) as any;
 
       if (error) {
         toast.error(error.message);
@@ -36,8 +43,9 @@ export default function LoginPage() {
         toast.success('Logged in successfully');
         navigate('/dashboard');
       }
-    } catch (err) {
-      toast.error('An unexpected error occurred');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      toast.error(err.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

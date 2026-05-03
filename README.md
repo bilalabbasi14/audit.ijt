@@ -5,7 +5,7 @@ Audit.ijt is a comprehensive financial audit management web application designed
 ## Features
 
 - **Donor Management (Muawineen):** Track individual contributors, their contact details, and committed contribution amounts.
-- **Monthly Income Tracking:** Record donations categorized as "Amoomi" (Monthly) or "Khasoosi" (Special Purpose).
+- **Monthly Income Tracking:** Record donations categorized as "Amoomi" (General) or "Khasoosi" (Special Purpose).
 - **Expense Management:** Track organizational spending with customizable expense categories.
 - **Financial Period Selection:** Easily switch between months to view historical data and manage the current session.
 - **Summary Dashboard:** Real-time visibility into total income, expenses, and current balance.
