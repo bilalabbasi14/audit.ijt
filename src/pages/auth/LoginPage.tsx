@@ -82,12 +82,12 @@ export default function LoginPage() {
       >
         <div className="mb-8 text-center">
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mb-4"
           >
-            <span className="text-4xl font-black italic tracking-tighter text-primary">audit.<span className="text-foreground/80">ijt</span></span>
+            <span className="text-5xl font-black italic tracking-tighter text-primary">audit.<span className="text-foreground/80">ijt</span></span>
           </motion.div>
           <motion.h1 
             variants={itemVariants}

@@ -31,6 +31,20 @@ export const AuthBackground = () => {
         className="absolute -top-24 -left-24 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]"
       />
       
+      {/* Creative floating light beams */}
+      <div className="absolute inset-0 opacity-10">
+        <motion.div 
+          animate={{ x: ['100%', '-100%'], y: ['-100%', '100%'] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute top-0 left-0 w-1 h-[200%] bg-primary rotate-45 blur-xl"
+        />
+        <motion.div 
+          animate={{ x: ['-100%', '100%'], y: ['100%', '-100%'] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-0 right-0 w-1 h-[200%] bg-primary -rotate-45 blur-xl"
+        />
+      </div>
+
       <motion.div
         animate={{
           scale: [1, 1.3, 1],

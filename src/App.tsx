@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { OrgProvider } from '@/hooks/useOrganization';
@@ -17,6 +17,7 @@ import SettingsPage from '@/pages/SettingsPage';
 
 // Components
 import Navbar from '@/components/shared/Navbar';
+import { SplashScreen } from '@/components/shared/SplashScreen';
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -24,8 +25,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      <div className="flex h-screen w-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent shadow-lg shadow-primary/20"></div>
+          <p className="text-xs font-medium tracking-widest uppercase text-muted-foreground/40 animate-pulse">
+            Syncing Session
+          </p>
+        </div>
       </div>
     );
   }
@@ -59,23 +65,36 @@ function Layout() {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if splash has been seen in this session
+    return !sessionStorage.getItem('splash-seen');
+  });
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    sessionStorage.setItem('splash-seen', 'true');
+  };
+
   return (
-    <AuthProvider>
-      <OrgProvider>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route
-            path="/*"
-            element={
-              <AuthGuard>
-                <Layout />
-              </AuthGuard>
-            }
-          />
-        </Routes>
-        <Toaster position="top-right" richColors />
-      </OrgProvider>
-    </AuthProvider>
+    <>
+      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
+      <AuthProvider>
+        <OrgProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route
+              path="/*"
+              element={
+                <AuthGuard>
+                  <Layout />
+                </AuthGuard>
+              }
+            />
+          </Routes>
+          <Toaster position="top-right" richColors />
+        </OrgProvider>
+      </AuthProvider>
+    </>
   );
 }
