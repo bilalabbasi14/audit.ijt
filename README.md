@@ -11,6 +11,7 @@ Audit.ijt is a comprehensive financial audit management web application designed
 - **Summary Dashboard:** Real-time visibility into total income, expenses, and current balance.
 - **Balance Carry-Forward:** Automatic calculation of starting balances based on the closing balance of the previous month.
 - **PDF Report Generation:** Export detailed monthly financial reports for auditing and transparency.
+- **Admin Panel:** Platform super-admins can view all users, organization stats, and reset passwords.
 - **Responsive Design:** Fully accessible on desktop and mobile devices.
 
 ## Tech Stack
@@ -47,12 +48,14 @@ Audit.ijt is a comprehensive financial audit management web application designed
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your-project-url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    ```
+   The service role key is required for admin API routes and must never be exposed to the browser.
 
 ### Supabase Setup
 
 1. **Create a New Project:** Log in to Supabase and create a new project.
-2. **Database Schema:** Navigate to the SQL Editor in the Supabase dashboard and run the provided schema scripts to create tables for `muawineen`, `income_entries`, `expense_entries`, etc.
+2. **Database Schema:** Navigate to the SQL Editor in the Supabase dashboard and run the provided schema scripts to create tables for `muawineen`, `income_entries`, `expense_entries`, etc. Also run `supabase/migrations/001_super_admins.sql` to enable the admin panel.
 3. **API Keys:** Find your `SUPABASE_URL` and `SUPABASE_ANON_KEY` in the Project Settings -> API section.
 4. **Disable Email Confirmation:** For the application to work correctly with initial users, go to **Authentication -> Providers -> Email** and toggle **"Confirm email"** to **OFF**. This allows users to sign up and log in immediately.
 
@@ -64,9 +67,32 @@ npm run dev
 ```
 The app will be available at `http://localhost:3000`.
 
+For admin API routes (`/api/admin/*`), use Vercel's dev server so serverless functions are available:
+```bash
+npx vercel dev
+```
+
+## Admin Panel Setup
+
+1. **Run the migration:** Execute `supabase/migrations/001_super_admins.sql` in the Supabase SQL Editor.
+2. **Seed your admin account:** After signing up, find your user ID in Supabase **Authentication -> Users**, then run:
+   ```sql
+   insert into public.super_admins (user_id) values ('YOUR-USER-UUID-HERE');
+   ```
+3. **Set the service role key:** Add `SUPABASE_SERVICE_ROLE_KEY` to `.env.local` (local) and Vercel project settings (production).
+4. **Access the panel:** Log in as a super-admin and navigate to `/admin` or click the **Admin** link in the navbar.
+
+Super-admins can:
+- View platform-wide stats (organizations, income, expenses)
+- Browse all users and their organization details
+- Inspect per-user financial data (summaries, recent entries)
+- Reset user passwords (passwords are hashed and cannot be viewed)
+
 ## Project Structure
 
 ```text
+/api             # Vercel serverless admin API routes
+/supabase        # SQL migrations
 /src
 ├── /components  # Reusable UI components (shadcn/ui and shared)
 ├── /hooks       # Custom React hooks (e.g., auth, organization)
@@ -89,7 +115,7 @@ The app will be available at `http://localhost:3000`.
 
 1. **Push your code** to a GitHub repository.
 2. **Connect to Vercel:** Import your repository in [Vercel](https://vercel.com).
-3. **Environment Variables:** During the build step, add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Vercel project settings.
+3. **Environment Variables:** During the build step, add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` to the Vercel project settings.
 4. **Deploy:** Click deploy. Vercel will automatically handle the build and provide a live URL.
 
 ## Database Schema
@@ -102,6 +128,7 @@ The app will be available at `http://localhost:3000`.
 | `expense_categories` | Defines categories like Rent, Utilities, Salaries, etc. |
 | `monthly_summaries` | Stores calculated totals for each month to improve performance. |
 | `organizations` | Multi-tenant support for different organizational branches. |
+| `super_admins` | Platform super-admin user IDs for the admin panel. |
 
 ## Contributing
 
@@ -120,3 +147,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Email Rate Limit Exceeded:** If you get this error during login/signup, ensure "Confirm Email" is disabled in Supabase or use a different email for testing.
 - **RLS Errors (Rows not showing):** Ensure that Row Level Security (RLS) policies are correctly configured in Supabase to allow authenticated users to read/write data for their organization.
 - **Environment Variables not loading:** Double-check that your `.env.local` variables start with `NEXT_PUBLIC_` if you are using the provided Supabase client configuration.
+- **Admin panel API errors:** Ensure `SUPABASE_SERVICE_ROLE_KEY` is set and you are using `vercel dev` locally or a Vercel deployment. The Vite dev server alone does not serve `/api/admin/*` routes.
+- **Admin link not visible:** Confirm your user ID is in the `super_admins` table and the `is_super_admin()` RPC migration has been applied.
