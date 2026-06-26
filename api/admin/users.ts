@@ -1,0 +1,76 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { verifySuperAdmin } from '../_lib/admin-auth';
+import { emailToUsername } from '../_lib/auth-utils';
+import { getOrgStats } from '../_lib/user-stats';
+import { getServiceClient } from '../_lib/supabase-admin';
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const auth = await verifySuperAdmin(req);
+  if ('error' in auth) {
+    return res.status(auth.status).json({ error: auth.error });
+  }
+
+  try {
+    const service = getServiceClient();
+    const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10) || 1);
+    const perPage = Math.min(100, Math.max(1, parseInt(String(req.query.perPage ?? '50'), 10) || 50));
+
+    const { data: authData, error: authError } = await service.auth.admin.listUsers({
+      page,
+      perPage,
+    });
+
+    if (authError) {
+      console.error('listUsers error:', authError);
+      return res.status(500).json({ error: 'Failed to list users' });
+    }
+
+    const users = authData.users;
+    const userIds = users.map((u) => u.id);
+
+    const { data: orgs } = await service
+      .from('organizations')
+      .select('*')
+      .in('id', userIds);
+
+    const orgMap = new Map((orgs ?? []).map((org) => [org.id, org]));
+
+    const usersWithStats = await Promise.all(
+      users.map(async (user) => {
+        const org = orgMap.get(user.id);
+        const stats = org ? await getOrgStats(service, user.id) : null;
+
+        return {
+          id: user.id,
+          email: user.email ?? '',
+          username: emailToUsername(user.email ?? ''),
+          createdAt: user.created_at,
+          lastSignInAt: user.last_sign_in_at ?? null,
+          organization: org
+            ? {
+                id: org.id,
+                name: org.name,
+                currencySymbol: org.currency_symbol,
+                createdAt: org.created_at,
+              }
+            : null,
+          stats,
+        };
+      })
+    );
+
+    return res.status(200).json({
+      users: usersWithStats,
+      page,
+      perPage,
+      total: 'total' in authData ? (authData.total ?? users.length) : users.length,
+    });
+  } catch (err) {
+    console.error('Admin users list error:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}

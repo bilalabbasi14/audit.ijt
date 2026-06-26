@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { useOrganization } from '@/hooks/useOrganization';
 import { Button } from '@/components/ui/button';
 import { 
@@ -11,7 +12,8 @@ import {
   FileText, 
   Settings,
   LogOut,
-  Menu
+  Menu,
+  Shield
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import {
@@ -35,6 +37,7 @@ const navItems = [
 
 export default function Navbar() {
   const { signOut } = useAuth();
+  const { isSuperAdmin } = useAdmin();
   const { organization } = useOrganization();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +74,15 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 mr-2">
+            {isSuperAdmin && (
+              <Link
+                to="/admin"
+                className="text-xs font-semibold bg-destructive/10 text-destructive px-2 py-1 rounded flex items-center gap-1 hover:bg-destructive/20 transition-colors"
+              >
+                <Shield className="h-3 w-3" />
+                Admin
+              </Link>
+            )}
             <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-1 rounded">
               {organization?.name || 'Loading...'}
             </span>
@@ -95,6 +107,16 @@ export default function Navbar() {
                   <div className="px-2 py-1 text-sm font-semibold bg-primary/10 text-primary rounded inline-block self-start mb-4">
                     {organization?.name || 'Loading...'}
                   </div>
+                  {isSuperAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2 text-base font-medium rounded-md transition-colors text-destructive hover:bg-destructive/10"
+                    >
+                      <Shield className="h-5 w-5" />
+                      Admin Panel
+                    </Link>
+                  )}
                   {navItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = location.pathname === item.href;
