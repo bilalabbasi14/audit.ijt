@@ -32,12 +32,19 @@ export default function SignupPage() {
 
     setLoading(true);
     const email = usernameToEmail(username);
+    const normalizedPassword = password.trim();
+
+    if (!email) {
+      toast.error('Please enter a valid username');
+      setLoading(false);
+      return;
+    }
 
     try {
       // 1. Sign up user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
-        password,
+        password: normalizedPassword,
       });
 
       if (authError) throw authError;

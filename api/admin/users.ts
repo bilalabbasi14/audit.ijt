@@ -1,16 +1,23 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { verifySuperAdmin } from '../_lib/admin-auth';
 import { emailToUsername } from '../_lib/auth-utils';
+import { createLogger } from '../_lib/logger';
 import { getOrgStats } from '../_lib/user-stats';
 import { getServiceClient } from '../_lib/supabase-admin';
 
+const log = createLogger('admin/users');
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const started = Date.now();
+
   if (req.method !== 'GET') {
+    log.warn('method not allowed', { method: req.method });
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const auth = await verifySuperAdmin(req);
   if ('error' in auth) {
+    log.info('auth failed', { status: auth.status, ms: Date.now() - started });
     return res.status(auth.status).json({ error: auth.error });
   }
 
@@ -19,13 +26,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const page = Math.max(1, parseInt(String(req.query.page ?? '1'), 10) || 1);
     const perPage = Math.min(100, Math.max(1, parseInt(String(req.query.perPage ?? '50'), 10) || 50));
 
+    log.debug('list users', { adminId: auth.userId, page, perPage });
+
     const { data: authData, error: authError } = await service.auth.admin.listUsers({
       page,
       perPage,
     });
 
     if (authError) {
-      console.error('listUsers error:', authError);
+      log.error('listUsers failed', { adminId: auth.userId, err: authError.message });
       return res.status(500).json({ error: 'Failed to list users' });
     }
 
@@ -63,14 +72,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     );
 
+    const total = 'total' in authData ? (authData.total ?? users.length) : users.length;
+    log.info('ok', { adminId: auth.userId, page, perPage, count: users.length, total, ms: Date.now() - started });
+
     return res.status(200).json({
       users: usersWithStats,
       page,
       perPage,
-      total: 'total' in authData ? (authData.total ?? users.length) : users.length,
+      total,
     });
   } catch (err) {
-    console.error('Admin users list error:', err);
+    log.error('failed', { adminId: auth.userId, ms: Date.now() - started, err: String(err) });
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

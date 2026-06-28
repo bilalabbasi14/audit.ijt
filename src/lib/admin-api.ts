@@ -26,12 +26,21 @@ async function adminFetch<T>(path: string, options: RequestInit = {}): Promise<T
   const token = await getAccessToken();
   const response = await fetch(path, {
     ...options,
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   });
+
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.includes('application/json')) {
+    throw new AdminApiError(
+      'Admin API did not return JSON. Restart the dev server so /api routes run locally.',
+      502,
+    );
+  }
 
   const data = await response.json().catch(() => ({}));
 
