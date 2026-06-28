@@ -26,11 +26,22 @@ export default function LoginPage() {
 
     setLoading(true);
     const email = usernameToEmail(username);
+    const normalizedPassword = password.trim();
+
+    if (!email) {
+      toast.error('Please enter a valid username');
+      setLoading(false);
+      return;
+    }
+
+    if (import.meta.env.DEV) {
+      console.debug('[auth] signInWithPassword', { email });
+    }
 
     try {
       const loginPromise = supabase.auth.signInWithPassword({
         email,
-        password,
+        password: normalizedPassword,
       });
 
       const timeoutPromise = new Promise((_, reject) =>
@@ -40,7 +51,11 @@ export default function LoginPage() {
       const { error } = (await Promise.race([loginPromise, timeoutPromise])) as any;
 
       if (error) {
-        toast.error(error.message);
+        const message =
+          error.message === 'Invalid login credentials'
+            ? `Invalid username or password. Use the same username you signed up with (maps to ${email}).`
+            : error.message;
+        toast.error(message);
       } else {
         toast.success('Logged in successfully');
         navigate('/dashboard');

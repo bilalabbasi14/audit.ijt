@@ -14,7 +14,12 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     fetchAdminMe()
-      .then((data) => setStats(data.stats))
+      .then((data) => {
+        if (!data.stats) {
+          throw new Error('Admin API returned no stats');
+        }
+        setStats(data.stats);
+      })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load admin data'))
       .finally(() => setLoading(false));
   }, []);
@@ -32,7 +37,8 @@ export default function AdminDashboardPage() {
       <div className="text-center py-24">
         <p className="text-destructive">{error}</p>
         <p className="text-sm text-muted-foreground mt-2">
-          Ensure SUPABASE_SERVICE_ROLE_KEY is set and you are running via Vercel or `vercel dev`.
+          Admin stats are loaded from /api/admin/me. Restart <code className="text-xs">npm run dev</code>{' '}
+          after changing .env, and ensure SUPABASE_SERVICE_ROLE_KEY is set.
         </p>
       </div>
     );
