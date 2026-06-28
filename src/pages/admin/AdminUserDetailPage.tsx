@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ResetPasswordDialog } from '@/components/admin/ResetPasswordDialog';
+import { AdminUserMuawineenSection } from '@/components/admin/AdminUserMuawineenSection';
 import { formatCurrency } from '@/utils/session';
 import { format, parseISO } from 'date-fns';
 import {
@@ -192,6 +193,10 @@ export default function AdminUserDetailPage() {
             </CardHeader>
           </Card>
         </div>
+      )}
+
+      {user.organization && (
+        <AdminUserMuawineenSection userId={user.id} currency={currency} />
       )}
 
       {user.monthlySummaries.length > 0 && (

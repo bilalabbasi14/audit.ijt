@@ -1,8 +1,11 @@
 import { supabase } from '@/lib/supabase';
 import type {
   AdminMeResponse,
+  AdminMonthlyMuawinReport,
+  AdminMuawin,
   AdminUserDetail,
   AdminUsersListResponse,
+  CreateAdminMuawinInput,
 } from '@/types/admin';
 
 class AdminApiError extends Error {
@@ -68,6 +71,43 @@ export async function resetUserPassword(userId: string, password: string): Promi
     method: 'POST',
     body: JSON.stringify({ password }),
   });
+}
+
+export async function fetchAdminMuawineen(userId: string): Promise<AdminMuawin[]> {
+  const data = await adminFetch<{ muawineen: AdminMuawin[] }>(
+    `/api/admin/users/${userId}/muawineen`,
+  );
+  return data.muawineen;
+}
+
+export async function fetchAdminMonthlyMuawinReport(
+  userId: string,
+  month: string,
+): Promise<AdminMonthlyMuawinReport> {
+  return adminFetch<AdminMonthlyMuawinReport>(
+    `/api/admin/users/${userId}/muawineen/monthly-report?month=${encodeURIComponent(month)}`,
+  );
+}
+
+export async function createAdminMuawin(
+  userId: string,
+  input: CreateAdminMuawinInput,
+): Promise<AdminMuawin> {
+  const data = await adminFetch<{ muawin: AdminMuawin }>(
+    `/api/admin/users/${userId}/muawineen`,
+    {
+      method: 'POST',
+      body: JSON.stringify(input),
+    },
+  );
+  return data.muawin;
+}
+
+export async function deleteAdminMuawin(userId: string, muawinId: string): Promise<void> {
+  await adminFetch<{ success: boolean }>(
+    `/api/admin/users/${userId}/muawineen/${muawinId}`,
+    { method: 'DELETE' },
+  );
 }
 
 export { AdminApiError };

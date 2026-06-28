@@ -17,6 +17,21 @@ const API_ROUTES: ApiRoute[] = [
   { pattern: /^\/api\/admin\/me$/, file: 'api/admin/me.ts', paramNames: [] },
   { pattern: /^\/api\/admin\/users$/, file: 'api/admin/users.ts', paramNames: [] },
   {
+    pattern: /^\/api\/admin\/users\/([^/]+)\/muawineen\/monthly-report$/,
+    file: 'api/admin/users/[id]/muawineen/monthly-report.ts',
+    paramNames: ['id'],
+  },
+  {
+    pattern: /^\/api\/admin\/users\/([^/]+)\/muawineen\/([^/]+)$/,
+    file: 'api/admin/users/[id]/muawineen/[muawinId].ts',
+    paramNames: ['id', 'muawinId'],
+  },
+  {
+    pattern: /^\/api\/admin\/users\/([^/]+)\/muawineen$/,
+    file: 'api/admin/users/[id]/muawineen.ts',
+    paramNames: ['id'],
+  },
+  {
     pattern: /^\/api\/admin\/users\/([^/]+)\/reset-password$/,
     file: 'api/admin/users/[id]/reset-password.ts',
     paramNames: ['id'],

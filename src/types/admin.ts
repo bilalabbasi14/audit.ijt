@@ -68,3 +68,52 @@ export type AdminUsersListResponse = {
   perPage: number;
   total: number;
 };
+
+export type AdminMuawin = {
+  id: string;
+  org_id: string;
+  name: string;
+  contact_number: string | null;
+  address: string | null;
+  detail: string | null;
+  category: 'amoomi' | 'khasoosi' | 'both';
+  amoomi_committed_amount: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AdminMuawinPaymentStatus = 'paid' | 'partial' | 'unpaid' | 'not_applicable';
+
+export type AdminMonthlyMuawinRow = {
+  muawinId: string;
+  name: string;
+  category: 'amoomi' | 'khasoosi' | 'both';
+  committedAmount: number;
+  amoomiPaid: number;
+  khasoosiPaid: number;
+  totalPaid: number;
+  amoomiStatus: AdminMuawinPaymentStatus;
+  hasIncome: boolean;
+};
+
+export type AdminMonthlyMuawinReport = {
+  month: string;
+  rows: AdminMonthlyMuawinRow[];
+  summary: {
+    totalMuawineen: number;
+    paidCount: number;
+    partialCount: number;
+    unpaidCount: number;
+    expectedAmoomi: number;
+    receivedAmoomi: number;
+  };
+};
+
+export type CreateAdminMuawinInput = {
+  name: string;
+  category: 'amoomi' | 'khasoosi' | 'both';
+  amoomi_committed_amount?: number;
+  contact_number?: string;
+  address?: string;
+  detail?: string;
+};
