@@ -48,6 +48,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const orgMap = new Map((orgs ?? []).map((org) => [org.id, org]));
 
+    const { data: superAdmins } = await service.from('super_admins').select('user_id');
+    const superAdminIds = new Set((superAdmins ?? []).map((a) => a.user_id));
+
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
         const org = orgMap.get(user.id);
@@ -59,6 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           username: emailToUsername(user.email ?? ''),
           createdAt: user.created_at,
           lastSignInAt: user.last_sign_in_at ?? null,
+          isSuperAdmin: superAdminIds.has(user.id),
           organization: org
             ? {
                 id: org.id,

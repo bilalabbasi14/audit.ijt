@@ -10,7 +10,7 @@ const LEVELS: Record<LogLevel, number> = {
 function minLevel(): LogLevel {
   const env = process.env.LOG_LEVEL?.toLowerCase();
   if (env && env in LEVELS) return env as LogLevel;
-  return process.env.NODE_ENV === 'production' ? 'info' : 'debug';
+  return process.env.NODE_ENV = 'info';
 }
 
 function shouldLog(level: LogLevel): boolean {

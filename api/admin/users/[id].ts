@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { deleteUserAndOrgData } from '../../_lib/delete-user';
 import { verifySuperAdmin } from '../../_lib/admin-auth';
 import { emailToUsername } from '../../_lib/auth-utils';
 import { createLogger } from '../../_lib/logger';
@@ -10,7 +11,7 @@ const log = createLogger('admin/users/[id]');
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const started = Date.now();
 
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'DELETE') {
     log.warn('method not allowed', { method: req.method });
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -25,6 +26,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!userId) {
     log.warn('missing user id', { adminId: auth.userId });
     return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  if (req.method === 'DELETE') {
+    if (userId === auth.userId) {
+      return res.status(400).json({ error: 'Cannot delete your own account from the admin panel' });
+    }
+
+    try {
+      const service = getServiceClient();
+      const result = await deleteUserAndOrgData(service, userId);
+      if (result.ok === false) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      log.info('deleted user', { adminId: auth.userId, userId, ms: Date.now() - started });
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      log.error('delete failed', { adminId: auth.userId, userId, err: String(err) });
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   try {
@@ -64,6 +85,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const org = orgRes.data;
 
+    const { data: adminRow } = await service
+      .from('super_admins')
+      .select('user_id')
+      .eq('user_id', userId)
+      .maybeSingle();
+
     log.info('ok', {
       adminId: auth.userId,
       userId,
@@ -77,6 +104,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       username: emailToUsername(user.email ?? ''),
       createdAt: user.created_at,
       lastSignInAt: user.last_sign_in_at ?? null,
+      isSuperAdmin: Boolean(adminRow),
       organization: org
         ? {
             id: org.id,
