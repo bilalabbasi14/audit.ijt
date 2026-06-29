@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { assertUserOrg } from '../../../../_lib/admin-org';
-import { verifySuperAdmin } from '../../../../_lib/admin-auth';
-import { createLogger } from '../../../../_lib/logger';
-import { buildMonthlyMuawinReport } from '../../../../_lib/muawin-report';
-import { getServiceClient } from '../../../../_lib/supabase-admin';
+import { assertUserOrg } from '../../../../_lib/admin-org.js';
+import { verifySuperAdmin } from '../../../../_lib/admin-auth.js';
+import { createLogger } from '../../../../_lib/logger.js';
+import { buildMonthlyMuawinReport } from '../../../../_lib/muawin-report.js';
+import { getServiceClient } from '../../../../_lib/supabase-admin.js';
 
 const log = createLogger('admin/users/[id]/muawineen/monthly-report');
 

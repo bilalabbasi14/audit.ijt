@@ -1,7 +1,7 @@
 import type { VercelRequest } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { createLogger } from './logger';
-import { getAnonKey, getMissingAdminEnvVars, getServiceClient, getSupabaseUrl } from './supabase-admin';
+import { createLogger } from './logger.js';
+import { getAnonKey, getMissingAdminEnvVars, getServiceClient, getSupabaseUrl } from './supabase-admin.js';
 
 const log = createLogger('admin-auth');
 

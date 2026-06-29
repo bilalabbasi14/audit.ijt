@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { assertUserOrg } from '../../../_lib/admin-org';
-import { verifySuperAdmin } from '../../../_lib/admin-auth';
-import { createLogger } from '../../../_lib/logger';
-import { buildMonthlyFinancesReport } from '../../../_lib/monthly-finances';
-import { getServiceClient } from '../../../_lib/supabase-admin';
+import { assertUserOrg } from '../../../_lib/admin-org.js';
+import { verifySuperAdmin } from '../../../_lib/admin-auth.js';
+import { createLogger } from '../../../_lib/logger.js';
+import { buildMonthlyFinancesReport } from '../../../_lib/monthly-finances.js';
+import { getServiceClient } from '../../../_lib/supabase-admin.js';
 
 const log = createLogger('admin/users/[id]/monthly-finances');
 const MONTH_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;

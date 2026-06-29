@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { User } from '@supabase/supabase-js';
-import { verifySuperAdmin } from '../_lib/admin-auth';
-import { emailToUsername } from '../_lib/auth-utils';
-import { createLogger } from '../_lib/logger';
-import { getServiceClient } from '../_lib/supabase-admin';
+import { verifySuperAdmin } from '../_lib/admin-auth.js';
+import { emailToUsername } from '../_lib/auth-utils.js';
+import { createLogger } from '../_lib/logger.js';
+import { getServiceClient } from '../_lib/supabase-admin.js';
 
 const log = createLogger('admin/super-admins');
 

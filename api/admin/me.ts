@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { verifySuperAdmin } from '../_lib/admin-auth';
-import { createLogger } from '../_lib/logger';
-import { getPlatformStats } from '../_lib/user-stats';
-import { getServiceClient } from '../_lib/supabase-admin';
+import { verifySuperAdmin } from '../_lib/admin-auth.js';
+import { createLogger } from '../_lib/logger.js';
+import { getPlatformStats } from '../_lib/user-stats.js';
+import { getServiceClient } from '../_lib/supabase-admin.js';
 
 const log = createLogger('admin/me');
 

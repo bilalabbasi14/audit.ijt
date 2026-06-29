@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { verifySuperAdmin } from '../../../_lib/admin-auth';
-import { createLogger } from '../../../_lib/logger';
-import { getServiceClient } from '../../../_lib/supabase-admin';
+import { verifySuperAdmin } from '../../../_lib/admin-auth.js';
+import { createLogger } from '../../../_lib/logger.js';
+import { getServiceClient } from '../../../_lib/supabase-admin.js';
 
 const log = createLogger('admin/users/reset-password');
 

@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { deleteUserAndOrgData } from '../../_lib/delete-user';
-import { verifySuperAdmin } from '../../_lib/admin-auth';
-import { emailToUsername } from '../../_lib/auth-utils';
-import { createLogger } from '../../_lib/logger';
-import { getOrgStats } from '../../_lib/user-stats';
-import { getServiceClient } from '../../_lib/supabase-admin';
+import { deleteUserAndOrgData } from '../../_lib/delete-user.js';
+import { verifySuperAdmin } from '../../_lib/admin-auth.js';
+import { emailToUsername } from '../../_lib/auth-utils.js';
+import { createLogger } from '../../_lib/logger.js';
+import { getOrgStats } from '../../_lib/user-stats.js';
+import { getServiceClient } from '../../_lib/supabase-admin.js';
 
 const log = createLogger('admin/users/[id]');
 
