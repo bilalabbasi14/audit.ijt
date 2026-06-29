@@ -13,7 +13,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ResetPasswordDialog } from '@/components/admin/ResetPasswordDialog';
+import { DeleteUserDialog } from '@/components/admin/DeleteUserDialog';
 import { AdminUserMuawineenSection } from '@/components/admin/AdminUserMuawineenSection';
+import { AdminUserMonthlyFinancesSection } from '@/components/admin/AdminUserMonthlyFinancesSection';
+import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/utils/session';
 import { format, parseISO } from 'date-fns';
 import {
@@ -74,12 +77,26 @@ export default function AdminUserDetailPage() {
             <ArrowLeft className="h-4 w-4" />
             Back to Users
           </Button>
-          <h1 className="text-3xl font-bold">{user.username}</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-2 flex-wrap">
+            {user.username}
+            {user.isSuperAdmin && (
+              <Badge variant="destructive" className="text-xs">
+                Super Admin
+              </Badge>
+            )}
+          </h1>
           <p className="text-muted-foreground mt-1 text-sm">
             {user.organization?.name ?? 'No organization'}
           </p>
         </div>
-        <ResetPasswordDialog userId={user.id} username={user.username} />
+        <div className="flex flex-wrap gap-2">
+          <ResetPasswordDialog userId={user.id} username={user.username} />
+          <DeleteUserDialog
+            userId={user.id}
+            username={user.username}
+            isSuperAdmin={user.isSuperAdmin}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -196,7 +213,10 @@ export default function AdminUserDetailPage() {
       )}
 
       {user.organization && (
-        <AdminUserMuawineenSection userId={user.id} currency={currency} />
+        <>
+          <AdminUserMonthlyFinancesSection userId={user.id} currency={currency} />
+          <AdminUserMuawineenSection userId={user.id} currency={currency} />
+        </>
       )}
 
       {user.monthlySummaries.length > 0 && (
@@ -236,73 +256,6 @@ export default function AdminUserDetailPage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Income</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {user.recentIncome.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No income entries</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {user.recentIncome.map((entry) => (
-                    <TableRow key={entry.id}>
-                      <TableCell>{entry.date}</TableCell>
-                      <TableCell className="capitalize">{entry.type}</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(entry.amount, currency)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Expenses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {user.recentExpenses.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No expense entries</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {user.recentExpenses.map((entry) => (
-                    <TableRow key={entry.id}>
-                      <TableCell>{entry.date}</TableCell>
-                      <TableCell className="truncate max-w-[150px]">
-                        {entry.description ?? '—'}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(entry.amount, currency)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }

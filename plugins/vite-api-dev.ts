@@ -15,7 +15,18 @@ type ApiRoute = {
 
 const API_ROUTES: ApiRoute[] = [
   { pattern: /^\/api\/admin\/me$/, file: 'api/admin/me.ts', paramNames: [] },
+  {
+    pattern: /^\/api\/admin\/super-admins\/([^/]+)$/,
+    file: 'api/admin/super-admins/[userId].ts',
+    paramNames: ['userId'],
+  },
+  { pattern: /^\/api\/admin\/super-admins$/, file: 'api/admin/super-admins.ts', paramNames: [] },
   { pattern: /^\/api\/admin\/users$/, file: 'api/admin/users.ts', paramNames: [] },
+  {
+    pattern: /^\/api\/admin\/users\/([^/]+)\/monthly-finances$/,
+    file: 'api/admin/users/[id]/monthly-finances.ts',
+    paramNames: ['id'],
+  },
   {
     pattern: /^\/api\/admin\/users\/([^/]+)\/muawineen\/monthly-report$/,
     file: 'api/admin/users/[id]/muawineen/monthly-report.ts',

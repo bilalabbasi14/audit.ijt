@@ -25,6 +25,7 @@ export type AdminUserSummary = {
   username: string;
   createdAt: string;
   lastSignInAt: string | null;
+  isSuperAdmin: boolean;
   organization: AdminOrganization | null;
   stats: AdminOrgStats | null;
 };
@@ -116,4 +117,39 @@ export type CreateAdminMuawinInput = {
   contact_number?: string;
   address?: string;
   detail?: string;
+};
+
+export type AdminMonthlyFinancesReport = {
+  month: string;
+  summary: {
+    totalIncome: number;
+    totalExpenses: number;
+    closingBalance: number | null;
+    lastMonthBalance: number | null;
+    isDeficit: boolean;
+  } | null;
+  income: Array<{
+    id: string;
+    date: string;
+    amount: number;
+    type: string;
+    muawinName: string;
+    notes: string | null;
+    khasoosiPurpose: string | null;
+  }>;
+  expenses: Array<{
+    id: string;
+    date: string;
+    amount: number;
+    categoryName: string;
+    description: string | null;
+  }>;
+};
+
+export type AdminSuperAdmin = {
+  userId: string;
+  email: string;
+  username: string;
+  createdAt: string;
+  isSelf: boolean;
 };

@@ -15,15 +15,26 @@ import {
 } from '@/components/ui/table';
 import { formatCurrency } from '@/utils/session';
 import { format, parseISO } from 'date-fns';
-import { Users, Search, Loader2, ChevronRight } from 'lucide-react';
+import { Users, Search, Loader2, ChevronRight, Trash2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { DeleteUserDialog } from '@/components/admin/DeleteUserDialog';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminUsersPage() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<AdminUserSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
+  const refreshUsers = () => {
+    fetchAdminUsers()
+      .then((data) => setUsers(data.users))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load users'));
+  };
+
   useEffect(() => {
+    setLoading(true);
     fetchAdminUsers()
       .then((data) => setUsers(data.users))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load users'))
@@ -107,7 +118,16 @@ export default function AdminUsersPage() {
               ) : (
                 filteredUsers.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.username}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {user.username}
+                        {user.isSuperAdmin && (
+                          <Badge variant="outline" className="text-[10px] px-1.5">
+                            Admin
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>{user.organization?.name ?? '—'}</TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {user.createdAt ? format(parseISO(user.createdAt), 'MMM d, yyyy') : '—'}
@@ -126,10 +146,25 @@ export default function AdminUsersPage() {
                         : '—'}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" render={<Link to={`/admin/users/${user.id}`} />} className="gap-1">
-                        View
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
+                      <div className="flex justify-end items-center gap-1">
+                        <Button variant="ghost" size="sm" render={<Link to={`/admin/users/${user.id}`} />} className="gap-1">
+                          View
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                        {currentUser?.id !== user.id && (
+                          <DeleteUserDialog
+                            userId={user.id}
+                            username={user.username}
+                            isSuperAdmin={user.isSuperAdmin}
+                            onDeleted={refreshUsers}
+                            trigger={
+                              <Button variant="ghost" size="icon" className="text-destructive">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            }
+                          />
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

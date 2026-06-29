@@ -18,6 +18,7 @@ import SettingsPage from '@/pages/SettingsPage';
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
 import AdminUsersPage from '@/pages/admin/AdminUsersPage';
 import AdminUserDetailPage from '@/pages/admin/AdminUserDetailPage';
+import AdminSuperAdminsPage from '@/pages/admin/AdminSuperAdminsPage';
 
 // Components
 import Navbar from '@/components/shared/Navbar';
@@ -94,6 +95,7 @@ function AdminLayoutRoutes() {
         <Route index element={<AdminDashboardPage />} />
         <Route path="users" element={<AdminUsersPage />} />
         <Route path="users/:id" element={<AdminUserDetailPage />} />
+        <Route path="admins" element={<AdminSuperAdminsPage />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminLayout>
